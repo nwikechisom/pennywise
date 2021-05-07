@@ -24,10 +24,11 @@ namespace pennywise.WebApi
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
                 .Build();
-
+            var sentryUrl = config.GetValue<string>("Sentry:Dsn");
             //Initialize Logger
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
+                .WriteTo.Sentry(o => o.Dsn = sentryUrl)
                 .CreateLogger();
             var host = CreateHostBuilder(args).Build();
             using (var scope = host.Services.CreateScope())
@@ -54,14 +55,32 @@ namespace pennywise.WebApi
                     Log.CloseAndFlush();
                 }
             }
-            host.Run();
+            try
+            {
+                Log.Error("Starting Application penywise");
+                host.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Startup Failed");
+            }
+            finally { Log.CloseAndFlush(); }
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .UseSerilog() //Uses Serilog instead of default .NET Logger
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>().UseSentry(
+                        options =>
+                        {
+                            options.BeforeSend = @event =>
+                            {
+                                // Never report server names
+                                @event.ServerName = null;
+                                return @event;
+                            };
+                        });
                 });
     }
 }
