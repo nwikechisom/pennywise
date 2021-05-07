@@ -74,6 +74,7 @@ namespace pennywise.WebApi
                     webBuilder.UseStartup<Startup>().UseSentry(
                         options =>
                         {
+                            options.Dsn = "https://0f819ae03db14d04935a3c75b2428a65@o465978.ingest.sentry.io/5753975";
                             options.BeforeSend = @event =>
                             {
                                 // Never report server names
