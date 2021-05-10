@@ -23,4 +23,9 @@ namespace pennywise.Domain.Enums
     {
         Daily, Weekly, Every2Weeks, Monthly, Yearly 
     }
+
+    public enum BankOwnershipType
+    {
+        IsPersonal,IsReceipient
+    }
 }

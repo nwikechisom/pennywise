@@ -33,6 +33,16 @@ namespace pennywise.Infrastructure.Shared.Services
             return response;
         }
 
+        public async Task<PaystackBaseResponse<ResolveAccountResponse>> ResolveAccountNumber(string accountNumber, string bankCode)
+        {
+            var token = _externalAuthService.GetPaystackToken();
+            var headers = new Dictionary<string, string>();
+            headers.Add("Authorization", $"Bearer {token}");
+            var response = await _httpClient.GetAsync<PaystackBaseResponse<ResolveAccountResponse>>
+                ($"{_paystackSettings.BaseUrl}{_paystackSettings.ResolveAccountUrl}?account_number={accountNumber}&bank_code={bankCode}", headers);
+            return response;
+        }
+
         public async Task<PaystackBaseResponse<VerifyPaymentResponse>> VerifyPayment(string reference)
         {
             var token = _externalAuthService.GetPaystackToken();

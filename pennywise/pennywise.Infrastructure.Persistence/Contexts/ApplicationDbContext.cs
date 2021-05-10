@@ -26,6 +26,8 @@ namespace pennywise.Infrastructure.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<PaymentPlan> PaymentPlans { get; set; }
+        public DbSet<Bank> Banks { get; set; }
+        public DbSet<BankDetail> BankDetails { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

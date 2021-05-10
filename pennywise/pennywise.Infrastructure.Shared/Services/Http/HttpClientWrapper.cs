@@ -1,4 +1,5 @@
-﻿using pennywise.Application.Interfaces.Http;
+﻿using Microsoft.Extensions.Logging;
+using pennywise.Application.Interfaces.Http;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,9 +11,12 @@ namespace pennywise.Infrastructure.Shared.Services.Http
     {
         private HttpClient Client { get; }
 
-        public HttpClientWrapper(HttpClient client)
+        private readonly ILogger<HttpClientWrapper> _logger;
+
+        public HttpClientWrapper(HttpClient client, ILogger<HttpClientWrapper> logger)
         {
             Client = client;
+            _logger = logger;
         }
 
         // this is just to demonstrate a simple reuse technique. you can do it in other ways. (singleton, DI, static)
@@ -94,6 +98,7 @@ namespace pennywise.Infrastructure.Shared.Services.Http
                 throw new ArgumentNullException(nameof(operation));
 
             var response = await operation(Client).ConfigureAwait(false);
+            _logger.LogInformation("HttpClientRequest", operation, response);
 
             //if (!response.IsSuccessStatusCode)
             //{

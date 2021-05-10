@@ -33,6 +33,8 @@ namespace pennywise.Infrastructure.Persistence
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
             services.AddTransient<ITransactionRepositoryAsync, TransactionRepositoryAsync>();
             services.AddTransient<IPaymentPlanRepository, PaymentPlanRepository>();
+            services.AddTransient<IBankDetailRepositoryAsync, BankDetailRepositoryAsync>();
+            services.AddTransient<IBankRepositoryAsync, BankRespositoryAsync>();
             #endregion
         }
     }

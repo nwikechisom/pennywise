@@ -10,5 +10,6 @@ namespace pennywise.Application.Interfaces
     {
         public Task<PaystackBaseResponse<InitiatePaymentResponse>> InitializePaystackPayment(InitiatePaymentRequest request);
         public Task<PaystackBaseResponse<VerifyPaymentResponse>> VerifyPayment(string reference);
+        public Task<PaystackBaseResponse<ResolveAccountResponse>> ResolveAccountNumber(string accountNumber, string bankCode);
     }
 }

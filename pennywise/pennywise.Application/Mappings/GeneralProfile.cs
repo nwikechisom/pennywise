@@ -10,6 +10,9 @@ using pennywise.Application.DTOs.Payment;
 using pennywise.Application.Features.Plan.Commands.Create;
 using pennywise.Application.Features.Plan.Queries;
 using pennywise.Application.Features.Transact.Queries;
+using pennywise.Application.Features.BankDetails.Queries;
+using pennywise.Application.Features.BankDetails.Commands;
+using pennywise.Application.Features.Banks.Queries;
 
 namespace pennywise.Application.Mappings
 {
@@ -36,6 +39,17 @@ namespace pennywise.Application.Mappings
             CreateMap<GetAllPlansViewModel, PaymentPlan>().ReverseMap();
             CreateMap<GetAllPlansQuery, GetAllPlansParameter>().ReverseMap();
             CreateMap<GetPlanDetailsViewModel, PaymentPlan>().ReverseMap();
+            #endregion
+
+            #region BankDetails
+            CreateMap<BankDetail, GetAllBankDetailsViewModel>().ReverseMap();
+            CreateMap<CreateBankDetailCommand, BankDetail>();
+            CreateMap<GetAllBankDetailsQuery, GetAllBankDetailsParameter>();
+            #endregion
+
+            #region Banks
+            CreateMap<Bank, GetAllBanksViewModel>().ReverseMap();
+            CreateMap<GetAllBanksQuery, GetAllBanksParameter>();
             #endregion
         }
     }

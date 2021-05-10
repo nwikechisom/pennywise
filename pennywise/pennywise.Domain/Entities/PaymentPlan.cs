@@ -19,5 +19,8 @@ namespace pennywise.Domain.Entities
         public bool IsLockedAmount { get; set; }
         public DateTime NextDueDate { get; set; }
         public PlanSchedule Schedule { get; set; }
+
+        //Plan receiver
+        public long ReceivingBankDetailsId { get; set; }
     }
 }
