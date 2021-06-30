@@ -45,4 +45,10 @@
     <ProjectReference Include="..\pennywise.Infrastructure.Shared\pennywise.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Files\ConfirmEmail.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using pennywise.Application.Features.BankDetails.Commands;
 using pennywise.Application.Features.Banks.Commands;
 using pennywise.Application.Features.Banks.Queries;
 
@@ -24,6 +25,12 @@ namespace pennywise.WebApi.Controllers.v1
 
         [HttpPost("resolveaccount")]
         public async Task<IActionResult> ResolveAccount([FromQuery] ResolveAccountNumberCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+        
+        [HttpPost("addbankdetail")]
+        public async Task<IActionResult> AddBankDetail([FromQuery] CreateBankDetailCommand command)
         {
             return Ok(await Mediator.Send(command));
         }

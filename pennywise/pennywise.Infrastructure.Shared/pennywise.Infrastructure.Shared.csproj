@@ -9,6 +9,7 @@
     <ProjectReference Include="..\pennywise.Application\pennywise.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Mailjet.Api" Version="2.0.2" />
     <PackageReference Include="MailKit" Version="2.8.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />

@@ -15,6 +15,6 @@ namespace pennywise.Application.Interfaces
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-        IQueryable<T> FindByParameter(Expression<Func<T, bool>> predicate);
+        IQueryable<T> GetByParameter(Expression<Func<T, bool>> predicate);
     }
 }

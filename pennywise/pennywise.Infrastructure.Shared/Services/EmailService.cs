@@ -1,13 +1,23 @@
-﻿using pennywise.Application.DTOs.Email;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using pennywise.Application.DTOs.Email;
 using pennywise.Application.Exceptions;
 using pennywise.Application.Interfaces;
 using pennywise.Domain.Settings;
-using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System.Threading.Tasks;
+using AutoMapper;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using Mailjet.Client.TransactionalEmails;
+using Mailjet.Client.TransactionalEmails.Response;
+using Newtonsoft.Json;
+using Attachment = System.Net.Mail.Attachment;
+using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace pennywise.Infrastructure.Shared.Services
 {
@@ -23,27 +33,31 @@ namespace pennywise.Infrastructure.Shared.Services
         }
 
         public async Task SendAsync(EmailRequest request)
-        {
+        {   
             try
             {
-                // create message
-                var email = new MimeMessage();
-                email.Sender = MailboxAddress.Parse(request.From ?? _mailSettings.EmailFrom);
-                email.To.Add(MailboxAddress.Parse(request.To));
-                email.Subject = request.Subject;
-                var builder = new BodyBuilder();
-                builder.HtmlBody = request.Body;
-                email.Body = builder.ToMessageBody();
-                using var smtp = new SmtpClient();
-                smtp.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
-                await smtp.SendAsync(email);
-                smtp.Disconnect(true);
-
+                MailjetClient client = new MailjetClient(_mailSettings.MailjetKey,_mailSettings.MailjetSecret);
+                MailjetRequest mailjetRequest = new MailjetRequest
+                {
+                    Resource = SendV31.Resource,
+                };
+                var email = new TransactionalEmailBuilder()
+                    .WithFrom(new SendContact(_mailSettings.EmailFrom))
+                    .WithSubject(request.Subject)
+                    .WithHtmlPart(request.Body)
+                    .WithTo(new SendContact(request.To))
+                    .Build();
+                TransactionalEmailResponse response = await client.SendTransactionalEmailAsync(email);
+                if (response.Messages.First().Errors != null)
+                {
+                    var errorMsg = ""; 
+                    response.Messages.First().Errors.ForEach(x => errorMsg += $"{x.ErrorMessage}, \n");
+                    throw new ApiException(errorMsg);
+                }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex.Message, ex);
+                _logger.LogError(ex, "Error occurred on SendEmailAsync {@request}", request);
                 throw new ApiException(ex.Message);
             }
         }

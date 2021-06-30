@@ -22,4 +22,7 @@
 <ItemGroup>
   <ProjectReference Include="..\pennywise.Application\pennywise.Application.csproj" />
 </ItemGroup>
+<ItemGroup>
+  <Folder Include="Models" />
+</ItemGroup>
 </Project>

@@ -27,7 +27,7 @@ namespace pennywise.WebApi.Controllers
         public async Task<IActionResult> RegisterAsync(RegisterRequest request)
         {
             var origin = Request.Headers["origin"];
-            return Ok(await _accountService.RegisterAsync(request, origin));
+            return Ok(await _accountService.RegisterAsync(request));
         }
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery]string userId, [FromQuery]string code)
@@ -35,6 +35,13 @@ namespace pennywise.WebApi.Controllers
             var origin = Request.Headers["origin"];
             return Ok(await _accountService.ConfirmEmailAsync(userId, code));
         }
+
+        [HttpGet("fetch-user/{userId}")]
+        public async Task<IActionResult> FetchUserByIdAsync([FromRoute] string userId)
+        {
+            return Ok(await _accountService.GetUserById(userId));
+        }
+        
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
         {

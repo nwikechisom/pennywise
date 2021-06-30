@@ -1,10 +1,10 @@
-﻿using pennywise.Infrastructure.Identity.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using pennywise.Application.Enums;
+using pennywise.Domain.Entities;
 
 namespace pennywise.Infrastructure.Identity.Seeds
 {

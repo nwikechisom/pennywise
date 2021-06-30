@@ -12,5 +12,7 @@ namespace pennywise.Domain.Settings
         public string SmtpUser { get; set; }
         public string SmtpPass { get; set; }
         public string DisplayName { get; set; }
+        public string MailjetKey { get; set; }
+        public string MailjetSecret { get; set; }
     }
 }

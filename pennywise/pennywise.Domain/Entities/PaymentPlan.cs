@@ -2,6 +2,7 @@
 using pennywise.Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace pennywise.Domain.Entities
@@ -21,6 +22,9 @@ namespace pennywise.Domain.Entities
         public PlanSchedule Schedule { get; set; }
 
         //Plan receiver
-        public long ReceivingBankDetailsId { get; set; }
+        public long ReceivingBankDetailsId { get; set; } //no longer needed
+        public ICollection<BankDetail> Receivers { get; set; } = new Collection<BankDetail>();
+
+        public bool IsFunded { get; set; } = false;
     }
 }

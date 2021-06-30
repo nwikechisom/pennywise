@@ -1,11 +1,11 @@
 ﻿using pennywise.Application.Enums;
-using pennywise.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using pennywise.Domain.Entities;
 
 namespace pennywise.Infrastructure.Identity.Seeds
 {

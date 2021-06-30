@@ -13,5 +13,6 @@ namespace pennywise.Application.Interfaces.Repositories
     {
         Task<Response<InitiatePaymentResponse>> StartNewTransaction(InitiateTransactionCommand request);
         Task<Response<string>> VerifyTransaction(string transactionReference);
+        Task<Response<string>> PayoutTransaction(List<PaymentPlan> request);
     }
 }

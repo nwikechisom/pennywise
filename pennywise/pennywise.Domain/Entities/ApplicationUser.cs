@@ -1,10 +1,9 @@
-﻿using pennywise.Application.DTOs.Account;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace pennywise.Infrastructure.Identity.Models
+namespace pennywise.Domain.Entities
 {
     public class ApplicationUser : IdentityUser
     {

@@ -1,10 +1,10 @@
-﻿using pennywise.Infrastructure.Identity.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using pennywise.Domain.Entities;
 
 namespace pennywise.Infrastructure.Identity.Contexts
 {

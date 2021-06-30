@@ -4,7 +4,6 @@ using pennywise.Application.Wrappers;
 using pennywise.Domain.Settings;
 using pennywise.Infrastructure.Identity.Contexts;
 using pennywise.Infrastructure.Identity.Helpers;
-using pennywise.Infrastructure.Identity.Models;
 using pennywise.Infrastructure.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +17,7 @@ using System;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using pennywise.Domain.Entities;
 
 namespace pennywise.Infrastructure.Identity
 {

@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Serilog;
 using pennywise.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
-using pennywise.Infrastructure.Identity.Models;
 using Microsoft.Extensions.DependencyInjection;
+using pennywise.Domain.Entities;
 
 namespace pennywise.WebApi
 {

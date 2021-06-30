@@ -13,5 +13,8 @@ namespace pennywise.Domain.Settings
         public string VerifyTransactionUrl { get; set; }
         public string ResolveAccountUrl { get; set; }
         public string PaymentCallback { get; set; }
+        public string CreateTransferRecipientUrl { get; set; }
+        public string SingleTransferUrl { get; set; }
+        public string BulkTransferUrl { get; set; }
     }
 }

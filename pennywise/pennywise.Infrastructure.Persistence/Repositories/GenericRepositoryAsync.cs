@@ -60,7 +60,7 @@ namespace pennywise.Infrastructure.Persistence.Repository
                  .ToListAsync();
         }
 
-        public IQueryable<T> FindByParameter(Expression<Func<T, bool>> predicate)
+        public IQueryable<T> GetByParameter(Expression<Func<T, bool>> predicate)
         {
             return _dbContext.Set<T>().Where(predicate);
         }

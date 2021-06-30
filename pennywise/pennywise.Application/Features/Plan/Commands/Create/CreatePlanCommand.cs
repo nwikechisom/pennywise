@@ -53,8 +53,9 @@ namespace pennywise.Application.Features.Plan.Commands.Create
         {
             var plan = _mapper.Map<PaymentPlan>(command);
             plan.UserId = _authenticatedUser.UserId;
-            if(command.BeginDate == DateTime.Today.Date)
             plan.NextDueDate = command.BeginDate;
+            var user = _authenticatedUser.GetCurrentUser();
+            //if(command.BeginDate == DateTime.Today.Date) //trigger payment
             var response = await _planRepository.CreatePlan(plan);
             return response;
         }

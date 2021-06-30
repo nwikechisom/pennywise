@@ -21,7 +21,7 @@ namespace pennywise.Domain.Enums
 
     public enum PlanSchedule
     {
-        Daily, Weekly, Every2Weeks, Monthly, Yearly 
+        Daily, Weekly, BiWeekly, Monthly, Yearly 
     }
 
     public enum BankOwnershipType

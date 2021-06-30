@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace pennywise.Application.DTOs.Account
+namespace pennywise.Domain.Entities
 {
     public class RefreshToken
     {

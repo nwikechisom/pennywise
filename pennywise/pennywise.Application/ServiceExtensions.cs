@@ -1,13 +1,10 @@
 ﻿using pennywise.Application.Behaviours;
-using pennywise.Application.Features.Products.Commands.CreateProduct;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace pennywise.Application
 {
@@ -19,7 +16,6 @@ namespace pennywise.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
         }
     }
 }

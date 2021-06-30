@@ -4,7 +4,6 @@ using pennywise.Application.Interfaces;
 using pennywise.Application.Wrappers;
 using pennywise.Domain.Settings;
 using pennywise.Infrastructure.Identity.Helpers;
-using pennywise.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -14,6 +13,7 @@ using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net.Cache;
 using System.Security.Claims;
@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Primitives;
 using pennywise.Application.DTOs.Email;
 using AutoMapper;
+using Microsoft.Extensions.Hosting;
+using pennywise.Domain.Entities;
 
 namespace pennywise.Infrastructure.Identity.Services
 {
@@ -36,13 +38,15 @@ namespace pennywise.Infrastructure.Identity.Services
         private readonly JWTSettings _jwtSettings;
         private readonly IDateTimeService _dateTimeService;
         private readonly IMapper _mapper;
+        private readonly IHostEnvironment _hostEnvironment;
+
         public AccountService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<JWTSettings> jwtSettings,
             IDateTimeService dateTimeService,
             IMapper mapper,
             SignInManager<ApplicationUser> signInManager,
-            IEmailService emailService)
+            IEmailService emailService, IHostEnvironment hostEnvironment)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -51,6 +55,7 @@ namespace pennywise.Infrastructure.Identity.Services
             _mapper = mapper;
             _signInManager = signInManager;
             this._emailService = emailService;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
@@ -83,7 +88,7 @@ namespace pennywise.Infrastructure.Identity.Services
             return new Response<AuthenticationResponse>(response, $"Authenticated {user.UserName}");
         }
 
-        public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
+        public async Task<Response<SignupResponse>> RegisterAsync(RegisterRequest request)
         {
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
             if (userWithSameUserName != null)
@@ -105,20 +110,20 @@ namespace pennywise.Infrastructure.Identity.Services
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
-                    var verificationUri = await SendVerificationEmail(user, origin);
-                    //TODO: Attach Email Service here and configure it via appsettings
-                    await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" });
-                    return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var confirmEmailHtmlString = await File.ReadAllTextAsync(Path.Combine(_hostEnvironment.ContentRootPath, "Files/ConfirmEmail.html"));
+                    var confirmEmailHtmlStringBuilder = new StringBuilder(confirmEmailHtmlString);
+                    
+                    var verificationUri =
+                        $"{_jwtSettings.ApplicationBaseUri}/api/confirm-email?userid={user.Id}&code={code}";
+                    confirmEmailHtmlStringBuilder.Replace("{{verificationuri}}", verificationUri);
+                    await _emailService.SendAsync(new EmailRequest {To = user.Email, Body = confirmEmailHtmlStringBuilder.ToString(), Subject = "Confirm Registration" });
+                    return new Response<SignupResponse>(new SignupResponse{Code = code, UserId = user.Id}, message: $"User Registered. Please continue to confirm your account");
                 }
-                else
-                {
-                    throw new ApiException($"{result.Errors}");
-                }
+                throw new ApiException($"{result.Errors}");
             }
-            else
-            {
-                throw new ApiException($"Email {request.Email } is already registered.");
-            }
+            throw new ApiException($"Email {request.Email } is already registered.");
         }
 
         private async Task<JwtSecurityToken> GenerateJWToken(ApplicationUser user)
@@ -165,18 +170,6 @@ namespace pennywise.Infrastructure.Identity.Services
             rngCryptoServiceProvider.GetBytes(randomBytes);
             // convert random bytes to hex string
             return BitConverter.ToString(randomBytes).Replace("-", "");
-        }
-
-        private async Task<string> SendVerificationEmail(ApplicationUser user, string origin)
-        {
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "api/account/confirm-email/";
-            var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
-            //Email Service Call Here
-            return verificationUri;
         }
 
         public async Task<Response<string>> ConfirmEmailAsync(string userId, string code)
